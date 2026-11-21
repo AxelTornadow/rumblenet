@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RumbleNet — Leave the feed. Join the rumble.</title>
+<meta name="description" content="RumbleNet: el party game donde las redes sociales se convierten en un juego. Vívelo en exclusiva en la VI Feria Gamer, 26 de noviembre, Coliseo Los Fundadores — Universidad del Norte.">
+<meta property="og:title" content="RumbleNet — Leave the feed. Join the rumble.">
+<meta property="og:description" content="Conéctate al juego. Desconecta del exceso. VI Feria Gamer · 26 de noviembre · Coliseo Los Fundadores.">
+<meta property="og:image" content="assets/trailer_poster.jpg">
+<meta name="theme-color" content="#b9a6ff">
+<link rel="icon" href="assets/logo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#2a1b5e; --ink-2:#4a3a86; --ink-soft:#6c5fa3;
+  --lav:#c8b8ff; --lav-2:#b9a6ff; --blush:#f4b8de; --paper:#f6f1ff; --white:#fff;
+  --cyan:#3fd0ff; --cyan-d:#1a9fe0; --pink:#ff5c9d; --pink-d:#e0377c; --coral:#ff8f7d;
+  --yellow:#ffd23f; --green:#5cc24a; --red:#ff5a3c; --blue:#2f7bff;
+  --radius:28px; --shadow:0 18px 50px -18px rgba(42,27,94,.45);
+  --display:"Lilita One", "Arial Rounded MT Bold", system-ui, sans-serif;
+  --body:"Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--body); color:var(--ink); overflow-x:hidden;
+  background:linear-gradient(160deg,#cdbcff 0%,#c3b3ff 30%,#dcb8f0 65%,#f4b8de 100%) fixed;
+  background-color:#c8b8ff;
+}
+img{max-width:100%;display:block}
+a{color:inherit}
+.wrap{width:min(1180px,100% - 32px);margin-inline:auto}
+
+/* ---------- background icon field ---------- */
+#field{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+#field svg{position:absolute;opacity:.18;color:#fff;animation:drift linear infinite}
+@keyframes drift{from{transform:translateY(110vh) rotate(0)}to{transform:translateY(-20vh) rotate(40deg)}}
+main,header,footer{position:relative;z-index:1}
+
+/* ---------- nav ---------- */
+.nav{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:50;width:min(1180px,100% - 24px);
+  display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 12px 10px 18px;
+  background:rgba(255,255,255,.55);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);
+  border:1px solid rgba(255,255,255,.7);border-radius:999px;box-shadow:0 10px 30px -15px rgba(42,27,94,.5);transition:transform .35s, background .35s}
+.nav.hide{transform:translate(-50%,-120%)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--display);font-size:22px;letter-spacing:.5px}
+.brand img{width:40px;height:40px;border-radius:12px}
+.brand b{color:var(--cyan-d)} .brand i{font-style:normal;color:var(--pink)}
+.nav ul{display:flex;gap:4px;list-style:none}
+.nav ul a{display:block;padding:9px 14px;border-radius:999px;text-decoration:none;font-weight:800;font-size:15px;color:var(--ink-2);transition:background .2s,color .2s}
+.nav ul a:hover{background:rgba(255,255,255,.8);color:var(--ink)}
+.btn{--bg:var(--pink);--bd:var(--pink-d);display:inline-flex;align-items:center;gap:10px;border:0;cursor:pointer;text-decoration:none;
+  font-family:var(--display);font-size:19px;letter-spacing:.6px;color:#fff;background:var(--bg);padding:14px 26px;border-radius:999px;
+  box-shadow:0 6px 0 var(--bd),0 14px 28px -10px rgba(224,55,124,.7);transition:transform .15s,box-shadow .15s;white-space:nowrap}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 0 var(--bd),0 18px 30px -10px rgba(224,55,124,.75)}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 var(--bd),0 8px 18px -10px rgba(224,55,124,.7)}
+.btn.sm{font-size:16px;padding:10px 18px}
+.btn.ghost{--bg:#fff;--bd:#d9cdfb;color:var(--ink);box-shadow:0 6px 0 var(--bd),0 14px 28px -12px rgba(42,27,94,.4)}
+.btn.cyan{--bg:var(--cyan);--bd:var(--cyan-d);box-shadow:0 6px 0 var(--bd),0 14px 28px -10px rgba(26,159,224,.6)}
+
+/* ---------- hero ---------- */
+.hero{min-height:100svh;display:grid;place-items:center;text-align:center;padding:120px 0 60px;position:relative}
+.hero-inner{position:relative;display:flex;flex-direction:column;align-items:center}
+.logo-stage{position:relative;width:min(560px,86vw);aspect-ratio:1;margin-top:-30px;transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .2s ease-out}
+.logo-stage img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 30px 40px rgba(42,27,94,.35));
+  -webkit-mask-image:radial-gradient(circle at 50% 55%,#000 52%,transparent 70%);mask-image:radial-gradient(circle at 50% 55%,#000 52%,transparent 70%);
+  animation:bob 5s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.chip{position:absolute;display:flex;align-items:center;gap:8px;background:#fff;border-radius:999px;padding:10px 16px;font-weight:900;font-size:18px;
+  box-shadow:var(--shadow);animation:floaty 6s ease-in-out infinite;white-space:nowrap}
+.chip svg{width:22px;height:22px}
+.chip.heart{top:22%;left:-6%;color:var(--ink)} .chip.heart svg{color:var(--pink)}
+.chip.like{bottom:24%;left:-2%;width:62px;height:62px;padding:0;justify-content:center;background:var(--blue);color:#fff;animation-delay:-2s}
+.chip.like svg{width:30px;height:30px}
+.chip.dots{top:18%;right:-4%;padding:14px 20px;animation-delay:-1s} .chip.dots span{width:9px;height:9px;border-radius:50%;background:var(--ink)}
+.chip.new{bottom:30%;right:-6%;background:var(--yellow);font-family:var(--display);font-size:22px;letter-spacing:1px;transform:rotate(8deg);animation-delay:-3s;box-shadow:0 5px 0 #e0a800,var(--shadow)}
+@keyframes floaty{0%,100%{translate:0 0}50%{translate:0 -16px}}
+.ribbon{position:relative;margin-top:-70px;font-family:var(--display);color:#fff;font-size:clamp(20px,3.4vw,34px);letter-spacing:1px;
+  background:linear-gradient(180deg,#ff7fb2,#f2558f);padding:14px 38px;border-radius:14px;transform:rotate(-2.5deg);
+  box-shadow:0 7px 0 #c93a73,0 20px 30px -12px rgba(201,58,115,.7);text-shadow:0 3px 0 rgba(160,30,90,.45)}
+.ribbon::before,.ribbon::after{content:"";position:absolute;top:18px;width:40px;height:100%;background:#c93a73;z-index:-1;border-radius:6px}
+.ribbon::before{left:-24px;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,35% 50%)}
+.ribbon::after{right:-24px;clip-path:polygon(0 0,100% 0,65% 50%,100% 100%,0 100%)}
+.hero p.lead{margin-top:34px;font-size:clamp(18px,2.2vw,23px);font-weight:800;color:var(--ink-2);max-width:620px}
+.hero .ctas{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:28px}
+.heads{display:flex;gap:clamp(6px,2vw,22px);margin-top:46px}
+.heads img{width:clamp(64px,9vw,100px);filter:drop-shadow(0 12px 14px rgba(42,27,94,.35));animation:hop 2.4s ease-in-out infinite;cursor:pointer;transition:scale .2s}
+.heads img:hover{scale:1.18}
+.heads img:nth-child(2){animation-delay:.2s}.heads img:nth-child(3){animation-delay:.4s}.heads img:nth-child(4){animation-delay:.6s}
+@keyframes hop{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-18px) rotate(-4deg)}}
+.scroll-hint{position:absolute;bottom:22px;left:50%;translate:-50% 0;font-weight:900;font-size:13px;letter-spacing:3px;color:var(--ink-soft);display:flex;flex-direction:column;align-items:center;gap:8px}
+.scroll-hint i{width:26px;height:42px;border:3px solid var(--ink-soft);border-radius:20px;position:relative}
+.scroll-hint i::after{content:"";position:absolute;left:50%;top:8px;width:5px;height:9px;border-radius:4px;background:var(--ink-soft);translate:-50% 0;animation:wheel 1.6s infinite}
+@keyframes wheel{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(14px)}}
+
+/* ---------- marquee ---------- */
+.marquee{background:var(--ink);color:#fff;overflow:hidden;transform:rotate(-1.6deg);margin:10px -20px;padding:18px 0;box-shadow:0 20px 40px -20px rgba(42,27,94,.8)}
+.marquee .track{display:flex;width:max-content;animation:slide 26s linear infinite}
+.marquee span{font-family:var(--display);font-size:clamp(22px,3vw,34px);letter-spacing:1.5px;padding:0 26px;display:flex;align-items:center;gap:26px;white-space:nowrap}
+.marquee span::after{content:"";width:16px;height:16px;border-radius:50%;background:var(--pink);box-shadow:0 0 0 5px rgba(255,92,157,.3)}
+.marquee span:nth-child(even)::after{background:var(--cyan);box-shadow:0 0 0 5px rgba(63,208,255,.3)}
+.marquee em{font-style:normal;color:var(--yellow)}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+/* ---------- sections ---------- */
+section{padding:110px 0}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-weight:900;font-size:14px;letter-spacing:3px;text-transform:uppercase;color:var(--pink-d);background:rgba(255,255,255,.65);padding:8px 16px;border-radius:999px}
+.kicker::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+h2{font-family:var(--display);font-weight:400;font-size:clamp(40px,6vw,74px);line-height:.98;margin:18px 0 18px;letter-spacing:.5px;color:var(--ink);text-shadow:0 4px 0 rgba(255,255,255,.6)}
+h2 .c{color:var(--cyan-d)} h2 .p{color:var(--pink)}
+.sub{font-size:clamp(17px,1.8vw,20px);font-weight:700;color:var(--ink-2);max-width:640px}
+.center{text-align:center}.center .sub{margin-inline:auto}
+
+/* concept */
+.concept-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+.big-quote{font-family:var(--display);font-size:clamp(46px,7vw,96px);line-height:.95;color:var(--ink)}
+.big-quote .strike{position:relative;color:var(--ink-soft)}
+.big-quote .strike::after{content:"";position:absolute;left:-2%;right:-2%;top:52%;height:.12em;background:var(--pink);border-radius:9px;transform:scaleX(0);transform-origin:left;transition:transform .9s .3s cubic-bezier(.7,0,.2,1)}
+.in .big-quote .strike::after{transform:scaleX(1)}
+.big-quote .hl{background:linear-gradient(90deg,var(--pink),#ff8fc0);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 0 rgba(201,58,115,.35))}
+.pillars{display:grid;gap:16px}
+.pillar{display:flex;gap:18px;align-items:flex-start;background:rgba(255,255,255,.7);border:1px solid #fff;border-radius:22px;padding:20px 22px;box-shadow:var(--shadow);transition:transform .25s}
+.pillar:hover{transform:translateX(8px) rotate(-.5deg)}
+.pillar .ic{flex:none;width:54px;height:54px;border-radius:16px;display:grid;place-items:center;color:#fff}
+.pillar .ic svg{width:28px;height:28px}
+.pillar h3{font-family:var(--display);font-weight:400;font-size:24px;letter-spacing:.4px}
+.pillar p{font-weight:700;color:var(--ink-2);margin-top:2px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:64px}
+.stat{background:#fff;border-radius:24px;padding:24px 18px;text-align:center;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.stat::before{content:"";position:absolute;inset:auto -20% -60% -20%;height:80%;background:radial-gradient(closest-side,var(--g,rgba(63,208,255,.25)),transparent);}
+.stat b{display:block;font-family:var(--display);font-weight:400;font-size:clamp(44px,5vw,62px);line-height:1;color:var(--c,var(--cyan-d));position:relative}
+.stat span{font-weight:800;color:var(--ink-2);position:relative}
+
+/* trailer */
+.post{max-width:980px;margin:48px auto 0;background:#fff;border-radius:34px;padding:16px;box-shadow:0 40px 80px -30px rgba(42,27,94,.6);transform:rotate(-1deg);transition:transform .4s}
+.post:hover{transform:rotate(0)}
+.post-head{display:flex;align-items:center;gap:12px;padding:6px 8px 14px}
+.post-head .av{width:44px;height:44px;border-radius:50%;background:conic-gradient(var(--pink),var(--yellow),var(--cyan),var(--pink));padding:3px}
+.post-head .av img{width:100%;height:100%;border-radius:50%;background:#fff;object-fit:cover}
+.post-head b{display:block;font-weight:900}.post-head small{color:var(--ink-soft);font-weight:700}
+.post-head .live{margin-left:auto;font-weight:900;font-size:13px;letter-spacing:1.5px;color:#fff;background:var(--pink);padding:6px 12px;border-radius:999px}
+.video{position:relative;border-radius:22px;overflow:hidden;background:#1b1240;aspect-ratio:16/9}
+.video video{width:100%;height:100%;display:block;object-fit:cover}
+.play{position:absolute;inset:0;display:grid;place-items:center;border:0;cursor:pointer;background:linear-gradient(180deg,rgba(42,27,94,0) 40%,rgba(42,27,94,.55));transition:opacity .3s}
+.play span{width:104px;height:104px;border-radius:50%;background:var(--pink);display:grid;place-items:center;box-shadow:0 0 0 14px rgba(255,92,157,.35),0 0 0 30px rgba(255,92,157,.15);animation:pulse 1.8s infinite}
+.play svg{width:40px;height:40px;color:#fff;margin-left:6px}
+.play em{position:absolute;bottom:22px;left:26px;font-style:normal;font-family:var(--display);color:#fff;font-size:24px;letter-spacing:1px;text-shadow:0 3px 10px rgba(0,0,0,.4)}
+.playing .play{opacity:0;pointer-events:none}
+@keyframes pulse{50%{box-shadow:0 0 0 20px rgba(255,92,157,.25),0 0 0 44px rgba(255,92,157,.06)}}
+.post-foot{display:flex;align-items:center;gap:22px;padding:16px 10px 6px;font-weight:900;font-size:18px}
+.post-foot button{display:flex;align-items:center;gap:8px;border:0;background:none;font:inherit;color:var(--ink);cursor:pointer;position:relative}
+.post-foot svg{width:28px;height:28px;transition:transform .2s}
+#likeBtn.on svg{color:var(--pink);fill:var(--pink);transform:scale(1.15)}
+.post-foot .cap{margin-left:auto;font-weight:700;color:var(--ink-soft);font-size:15px}
+.burst{position:absolute;left:4px;top:-4px;pointer-events:none;color:var(--pink);animation:burst 1s ease-out forwards}
+@keyframes burst{to{transform:translate(var(--x),-90px) scale(.4);opacity:0}}
+
+/* minigames */
+.games{display:grid;grid-template-columns:repeat(6,1fr);gap:20px;margin-top:52px}
+.game{grid-column:span 2;position:relative;border-radius:var(--radius);overflow:hidden;background:#fff;box-shadow:var(--shadow);min-height:360px;display:flex;flex-direction:column;
+  transform:perspective(900px) rotateX(var(--rx,0)) rotateY(var(--ry,0));transition:transform .15s ease-out,box-shadow .3s}
+.game:nth-child(1),.game:nth-child(2){grid-column:span 3;min-height:420px}
+.game:hover{box-shadow:0 34px 60px -24px rgba(42,27,94,.65)}
+.game .shot{position:relative;flex:1;overflow:hidden}
+.game .shot img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.game:hover .shot img{transform:scale(1.07)}
+.game .tag{position:absolute;top:16px;left:16px;font-weight:900;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#fff;background:var(--tc,var(--pink));padding:7px 13px;border-radius:999px;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.game .body{padding:20px 22px 22px}
+.game h3{font-family:var(--display);font-weight:400;font-size:30px;letter-spacing:.5px;line-height:1}
+.game p{margin-top:8px;font-weight:700;color:var(--ink-2)}
+.trends{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.trends span{font-weight:900;font-size:13px;padding:6px 11px;border-radius:999px;background:var(--paper);color:var(--ink-2);border:1px solid #e3daff}
+
+/* characters */
+.select{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;margin-top:40px;background:rgba(255,255,255,.55);border:1px solid #fff;border-radius:40px;padding:40px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.select::before{content:"";position:absolute;width:520px;height:520px;left:-120px;top:50%;translate:0 -50%;border-radius:50%;background:radial-gradient(closest-side,var(--glow,rgba(63,208,255,.55)),transparent);transition:background .5s}
+.stage{position:relative;display:grid;place-items:center;min-height:400px}
+.stage img{width:min(330px,70vw);position:relative;z-index:2;filter:drop-shadow(0 24px 22px rgba(42,27,94,.4));animation:bob 3.2s ease-in-out infinite}
+.stage img.swap{animation:swapin .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes swapin{from{transform:scale(.4) rotate(-20deg);opacity:0}}
+.platform{position:absolute;bottom:22px;width:min(360px,74vw);height:70px;border-radius:50%;background:linear-gradient(#fff,#e7defc);box-shadow:0 10px 0 #cbbdf5,0 0 0 6px var(--ring,var(--cyan)),0 0 40px 6px var(--ring,var(--cyan));transition:box-shadow .5s}
+.info .pnum{font-weight:900;letter-spacing:3px;color:var(--ink-soft)}
+.info h3{font-family:var(--display);font-weight:400;font-size:clamp(60px,8vw,104px);line-height:.9;color:var(--cc,var(--cyan-d));text-shadow:0 6px 0 rgba(42,27,94,.15);transition:color .4s}
+.info .who{margin-top:10px;font-size:20px;font-weight:800;color:var(--ink-2)}
+.picker{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap}
+.picker button{width:84px;height:84px;border-radius:24px;border:3px solid transparent;background:#fff;cursor:pointer;padding:6px;box-shadow:0 6px 0 #ddd2fb;transition:transform .2s,border-color .2s}
+.picker button:hover{transform:translateY(-4px)}
+.picker button[aria-pressed="true"]{border-color:var(--cc,var(--cyan));transform:translateY(-4px)}
+.arrows{display:flex;gap:10px;margin-top:22px;align-items:center;font-weight:800;color:var(--ink-soft)}
+.arrows kbd{font-family:var(--body);font-weight:900;background:#fff;border-radius:8px;padding:3px 9px;box-shadow:0 3px 0 #d6cbf7;color:var(--ink)}
+
+/* team */
+.team{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:48px}
+.member{background:linear-gradient(180deg,var(--t1),var(--t2));border:2px solid rgba(255,255,255,.8);border-radius:26px;padding:22px 18px 24px;text-align:center;box-shadow:var(--shadow);position:relative;transition:transform .25s}
+.member:hover{transform:translateY(-8px) rotate(var(--rot,-1.5deg))}
+.member .p{position:absolute;top:14px;left:14px;font-weight:900;font-size:13px;color:#fff;background:var(--ink);border-radius:8px;padding:3px 8px}
+.member img{width:110px;margin:0 auto 10px;filter:drop-shadow(0 10px 10px rgba(42,27,94,.3))}
+.member b{display:block;font-family:var(--display);font-weight:400;font-size:24px;letter-spacing:.4px;color:var(--ink)}
+.member span{font-weight:800;font-size:14px;letter-spacing:1px;text-transform:uppercase;color:var(--tc)}
+.course{margin-top:28px;display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.course span{background:rgba(255,255,255,.7);border-radius:999px;padding:10px 18px;font-weight:800;color:var(--ink-2)}
+.course span b{color:var(--ink)}
+
+/* event */
+.event{display:grid;grid-template-columns:1.05fr .95fr;gap:0;border-radius:40px;overflow:hidden;box-shadow:0 40px 90px -30px rgba(42,27,94,.7);background:var(--ink);color:#fff;margin-top:48px}
+.event .photo{position:relative;min-height:520px}
+.event .photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.event .photo::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 55%,var(--ink)),linear-gradient(0deg,rgba(42,27,94,.7),transparent 40%)}
+.event .photo .badge{position:absolute;left:24px;bottom:24px;z-index:2;font-family:var(--display);font-size:22px;letter-spacing:.5px;background:rgba(255,255,255,.16);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.35);padding:10px 16px;border-radius:14px}
+.event .details{padding:48px 44px;display:flex;flex-direction:column;gap:22px;position:relative}
+.event .details::before{content:"";position:absolute;right:-120px;top:-120px;width:360px;height:360px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,92,157,.45),transparent)}
+.event h3{font-family:var(--display);font-weight:400;font-size:clamp(40px,5vw,62px);line-height:.95;position:relative}
+.event h3 em{font-style:normal;color:var(--yellow)}
+.rows{display:grid;gap:14px;position:relative}
+.row{display:flex;gap:14px;align-items:center;font-weight:800;font-size:18px}
+.row .ic{flex:none;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:rgba(255,255,255,.12)}
+.row .ic svg{width:24px;height:24px}
+.row small{display:block;font-weight:700;font-size:14px;color:#c9bff0}
+.countdown{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;position:relative}
+.countdown div{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:14px 6px;text-align:center}
+.countdown b{display:block;font-family:var(--display);font-weight:400;font-size:clamp(34px,4vw,46px);line-height:1;color:#fff}
+.countdown span{font-size:12px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#c9bff0}
+.countdown.done{display:block;text-align:center;font-family:var(--display);font-size:30px;padding:18px;background:var(--pink);border-radius:18px}
+.event .ctas{display:flex;gap:12px;flex-wrap:wrap;position:relative}
+
+/* poster */
+.poster-wrap{display:grid;grid-template-columns:.8fr 1.2fr;gap:56px;align-items:center}
+.poster{border-radius:26px;overflow:hidden;box-shadow:0 40px 80px -30px rgba(42,27,94,.7);transform:rotate(-3deg);transition:transform .4s;border:8px solid #fff}
+.poster:hover{transform:rotate(0) scale(1.02)}
+
+/* footer */
+footer{padding:70px 0 120px;text-align:center}
+footer .bye{font-family:var(--display);font-size:clamp(36px,6vw,72px);line-height:1;color:var(--ink)}
+footer .bye span{color:var(--pink)}
+footer p{margin-top:16px;font-weight:700;color:var(--ink-2)}
+footer .small{margin-top:30px;font-size:14px;color:var(--ink-soft)}
+
+/* time-on-page pill */
+.clock{position:fixed;left:16px;bottom:16px;z-index:60;display:flex;align-items:center;gap:10px;background:rgba(42,27,94,.88);color:#fff;border-radius:999px;padding:9px 16px 9px 10px;font-weight:800;font-size:14px;box-shadow:0 14px 30px -12px rgba(42,27,94,.8);backdrop-filter:blur(8px);transition:transform .4s;max-width:calc(100vw - 32px)}
+.clock .dot{width:26px;height:26px;border-radius:50%;background:var(--pink);display:grid;place-items:center;flex:none}
+.clock .dot svg{width:15px;height:15px}
+.clock b{font-family:var(--display);font-weight:400;font-size:17px;letter-spacing:1px;color:var(--yellow)}
+.clock.nudge{animation:nudge .6s 2}
+@keyframes nudge{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* live-at-the-fair banner */
+.livebar{display:none;position:relative;z-index:2;margin:0 auto 26px;align-items:center;gap:12px;background:var(--ink);color:#fff;border-radius:999px;padding:9px 18px 9px 10px;font-weight:800;font-size:15px;box-shadow:0 14px 30px -14px rgba(42,27,94,.8);max-width:100%}
+.livebar .rec{flex:none;display:flex;align-items:center;gap:6px;background:#ff3b5c;border-radius:999px;padding:5px 10px;font-weight:900;font-size:12px;letter-spacing:1.5px}
+.livebar .rec::before{content:"";width:8px;height:8px;border-radius:50%;background:#fff;animation:blink 1s infinite}
+.livebar b{color:var(--yellow)}
+@keyframes blink{50%{opacity:.2}}
+body.live .livebar{display:inline-flex}
+
+/* how to play */
+.howto{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:44px;align-items:start}
+.steps{display:grid;gap:14px;counter-reset:st}
+.step{display:flex;gap:16px;align-items:center;background:#fff;border-radius:22px;padding:16px 18px;box-shadow:var(--shadow)}
+.step::before{counter-increment:st;content:counter(st);flex:none;width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-family:var(--display);font-size:26px;color:#fff;background:var(--sc,var(--pink));box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.step b{display:block;font-family:var(--display);font-weight:400;font-size:22px;letter-spacing:.3px}
+.step span{font-weight:700;color:var(--ink-2)}
+.pad{background:var(--ink);color:#fff;border-radius:30px;padding:28px 26px;box-shadow:0 30px 60px -26px rgba(42,27,94,.8);position:relative;overflow:hidden}
+.pad::after{content:"";position:absolute;right:-90px;bottom:-90px;width:260px;height:260px;border-radius:50%;background:radial-gradient(closest-side,rgba(63,208,255,.4),transparent)}
+.pad h3{font-family:var(--display);font-weight:400;font-size:30px;margin-bottom:18px;position:relative}
+.keys{display:grid;gap:12px;position:relative}
+.key{display:flex;align-items:center;gap:14px;font-weight:800;font-size:17px}
+.key kbd{flex:none;min-width:118px;text-align:center;font-family:var(--body);font-weight:900;letter-spacing:2px;font-size:15px;color:var(--ink);background:#fff;border-radius:12px;padding:9px 12px;box-shadow:0 4px 0 #b9a6ff}
+.pad .note{margin-top:18px;font-weight:700;font-size:14px;color:#c9bff0;position:relative}
+
+/* share */
+.toast{position:fixed;left:50%;bottom:76px;translate:-50% 20px;opacity:0;z-index:70;background:var(--ink);color:#fff;font-weight:800;padding:12px 20px;border-radius:999px;transition:.3s;pointer-events:none}
+.toast.show{opacity:1;translate:-50% 0}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.1s}.rv.d2{transition-delay:.2s}.rv.d3{transition-delay:.3s}
+
+/* responsive */
+@media (max-width:960px){
+  .nav ul{display:none}
+  .concept-grid,.select,.event,.poster-wrap{grid-template-columns:1fr}
+  .stats,.team{grid-template-columns:repeat(2,1fr)}
+  .howto{grid-template-columns:1fr}
+  .games{grid-template-columns:1fr 1fr}
+  .game,.game:nth-child(1),.game:nth-child(2){grid-column:span 1;min-height:340px}
+  .game:nth-child(1){grid-column:span 2}
+  .event .photo{min-height:300px}
+  .event .photo::after{background:linear-gradient(0deg,var(--ink),transparent 60%)}
+  .select{padding:28px 20px}
+  .poster{max-width:420px;margin:0 auto}
+}
+@media (max-width:600px){
+  section{padding:80px 0}
+  .games{grid-template-columns:1fr}.game:nth-child(1){grid-column:span 1}
+  .chip.heart{left:0;top:14%}.chip.dots{right:0;top:12%}.chip.new{right:0}.chip.like{left:4%}
+  .chip{font-size:15px;padding:8px 12px}.chip.like{width:50px;height:50px}
+  .ribbon{font-size:clamp(13px,4.2vw,20px);padding:11px 18px;white-space:nowrap;margin-top:-50px}
+  .ribbon::before,.ribbon::after{width:26px;top:12px}.ribbon::before{left:-16px}.ribbon::after{right:-16px}
+  .event .details{padding:32px 22px}
+  .countdown{grid-template-columns:repeat(4,1fr);gap:6px}
+  .brand span{display:none}
+  .clock .txt{display:none}
+  .post{padding:10px;border-radius:24px}
+  .post-foot .cap{display:none}
+  .hero{padding-top:100px}
+  .livebar{font-size:13px;text-align:left}
+  .key kbd{min-width:96px;font-size:13px}
+  .step b{font-size:19px}
+  .nav{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(255,255,255,.85)}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-heart" viewBox="0 0 24 24"><path fill="currentColor" d="M12 21s-7.5-4.6-9.6-9.3C.9 8.3 3 4.5 6.8 4.5c2.1 0 3.6 1.2 5.2 3 1.6-1.8 3.1-3 5.2-3 3.8 0 5.9 3.8 4.4 7.2C19.5 16.4 12 21 12 21z"/></symbol>
+  <symbol id="i-like" viewBox="0 0 24 24"><path fill="currentColor" d="M2 10h4v11H2zM8 21h9.3c1 0 1.8-.7 2-1.6l1.6-7.2c.3-1.3-.7-2.5-2-2.5H14l.8-3.9c.2-1-.3-2-1.2-2.4l-.9-.4L8 9.6z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path fill="currentColor" d="M4 3h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path fill="currentColor" d="M12 22a2.5 2.5 0 0 0 2.5-2.5h-5A2.5 2.5 0 0 0 12 22zm7-6V11a7 7 0 0 0-5.5-6.8V3a1.5 1.5 0 0 0-3 0v1.2A7 7 0 0 0 5 11v5l-2 2v1h18v-1z"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M6 4l15 8-15 8z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" d="M12 7v5l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><path fill="currentColor" d="M7 2h2v2h6V2h2v2h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3zm-2 7v10h14V9z"/></symbol>
+  <symbol id="i-pad" viewBox="0 0 24 24"><path fill="currentColor" d="M7 7h10a5 5 0 0 1 4.9 6l-.8 4a2.5 2.5 0 0 1-4.3 1.2L14.6 16H9.4l-2.2 2.2A2.5 2.5 0 0 1 2.9 17l-.8-4A5 5 0 0 1 7 7zm1 3v1.5H6.5V13H8v1.5h1.5V13H11v-1.5H9.5V10zm8.5 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2-1.5a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path fill="currentColor" d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM1 20c0-3.3 3.6-6 8-6s8 2.7 8 6v1H1zm16.5-5.9c3 .4 5.5 2.4 5.5 4.9v1h-4v-1c0-1.9-.6-3.6-1.5-4.9z"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m-5-5 5 5 5-5M5 20h14"/></symbol>
+</svg>
+
+<div id="field" aria-hidden="true"></div>
+
+<header class="nav" id="nav">
+  <a class="brand" href="#top"><img src="assets/logo.webp" alt=""><span><b>RUMBLE</b><i>NET</i></span></a>
+  <nav aria-label="Secciones"><ul>
+    <li><a href="#jugar">Cómo jugar</a></li>
+    <li><a href="#trailer">Tráiler</a></li>
+    <li><a href="#minijuegos">Minijuegos</a></li>
+    <li><a href="#personajes">Personajes</a></li>
+    <li><a href="#equipo">Equipo</a></li>
+    <li><a href="#evento">Evento</a></li>
+  </ul></nav>
+  <a class="btn sm" href="#evento" id="navCta">26 NOV</a>
+</header>
+
+<main id="top">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner wrap">
+      <a class="livebar" href="#jugar"><span class="rec">EN VIVO</span><span>Estás en la <b>mesa 412</b> · siéntate y juega RumbleNet</span></a>
+      <div class="logo-stage" id="logoStage">
+        <img src="assets/logo.webp" alt="RumbleNet">
+        <div class="chip heart"><svg><use href="#i-heart"/></svg>2,4K</div>
+        <div class="chip like"><svg><use href="#i-like"/></svg></div>
+        <div class="chip dots"><span></span><span></span><span></span></div>
+        <div class="chip new">NEW</div>
+      </div>
+      <div class="ribbon">LEAVE THE FEED. JOIN THE RUMBLE.</div>
+      <p class="lead" id="heroLead">El party game donde las redes sociales se convierten en un juego. Conéctate al juego. Desconecta del exceso.</p>
+      <div class="ctas">
+        <a class="btn" href="#trailer" id="cta1"><svg width="20" height="20"><use href="#i-play"/></svg>VER TRÁILER</a>
+        <a class="btn ghost" href="#evento" id="cta2">VÍVELO EN LA FERIA</a>
+      </div>
+      <div class="heads" aria-hidden="true">
+        <img src="assets/fuego.png" alt="" data-go="0"><img src="assets/agua.png" alt="" data-go="1"><img src="assets/planta.png" alt="" data-go="2"><img src="assets/rayo.png" alt="" data-go="3">
+      </div>
+    </div>
+    <div class="scroll-hint" aria-hidden="true"><i></i>SCROLL</div>
+  </section>
+
+  <div class="marquee" aria-hidden="true"><div class="track" id="track">
+    <span>EL SCROLL NO SE ACABA</span><span><em>TU TIEMPO SÍ</em></span><span>LEAVE THE FEED</span><span><em>JOIN THE RUMBLE</em></span><span>VI FERIA GAMER</span><span><em>26 DE NOVIEMBRE</em></span>
+  </div></div>
+
+  <!-- HOW TO PLAY -->
+  <section id="jugar">
+    <div class="wrap">
+      <span class="kicker rv">Así se juega</span>
+      <h2 class="rv">Deja el feed.<br><span class="c">Toma el control.</span></h2>
+      <p class="sub rv">En menos de un minuto estás compitiendo. Esto es todo lo que necesitas saber.</p>
+      <div class="howto">
+        <div class="steps">
+          <div class="step rv" style="--sc:var(--pink)"><div><b id="step1T">Ven a la mesa 412</b><span id="step1S">Nuestro stand en el Coliseo Los Fundadores, durante la VI Feria Gamer.</span></div></div>
+          <div class="step rv d1" style="--sc:var(--cyan-d)"><div><b>Entra a la sala</b><span>Hasta 4 jugadores por partida.</span></div></div>
+          <div class="step rv d2" style="--sc:var(--green)"><div><b>Elige tu elemento</b><span>Fuego, Agua, Planta o Rayo. Pulsa ENTER cuando estés listo.</span></div></div>
+          <div class="step rv d3" style="--sc:#e0a800"><div><b>Sobrevive 5 rondas</b><span>Suma puntos en cada minijuego y sube al podio.</span></div></div>
+        </div>
+        <div class="pad rv d1">
+          <h3>Controles</h3>
+          <div class="keys">
+            <div class="key"><kbd>W A S D</kbd>mover</div>
+            <div class="key"><kbd>ESPACIO</kbd>saltar</div>
+            <div class="key"><kbd>ESPACIO ×2</kbd>barrer</div>
+            <div class="key"><kbd>SHIFT</kbd>empujar</div>
+            <div class="key"><kbd>E</kbd>usar · posar</div>
+            <div class="key"><kbd>ENTER</kbd>¡estoy listo!</div>
+          </div>
+          <p class="note">Antes de empezar puedes probar los controles en la sala de espera.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONCEPT -->
+  <section id="concepto">
+    <div class="wrap">
+      <div class="concept-grid">
+        <div class="rv">
+          <span class="kicker">El concepto</span>
+          <h2>¿Y si las redes sociales se convirtieran en un <span class="p">juego</span>?</h2>
+          <p class="big-quote" style="margin-top:28px">El scroll <span class="strike">no se acaba.</span><br><span class="hl">Tu tiempo sí.</span></p>
+        </div>
+        <div class="pillars">
+          <div class="pillar rv d1"><div class="ic" style="background:var(--pink)"><svg><use href="#i-clock"/></svg></div><div><h3>Tu tiempo importa</h3><p>Cada ronda corre contra el reloj. En RumbleNet, el tiempo es lo que realmente cuenta.</p></div></div>
+          <div class="pillar rv d2"><div class="ic" style="background:var(--cyan-d)"><svg><use href="#i-pad"/></svg></div><div><h3>Juega. Interactúa. Descubre.</h3><p>Likes, tendencias, selfies y feeds convertidos en minijuegos de fiesta.</p></div></div>
+          <div class="pillar rv d3"><div class="ic" style="background:var(--green)"><svg><use href="#i-users"/></svg></div><div><h3>Conexión real</h3><p>Conectarte no significa desconectarte de la vida: juega con tus amigos, en la misma sala.</p></div></div>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat rv"><b data-count="5">0</b><span>rondas por partida</span></div>
+        <div class="stat rv d1" style="--c:var(--pink);--g:rgba(255,92,157,.25)"><b data-count="4">0</b><span>jugadores por sala</span></div>
+        <div class="stat rv d2" style="--c:var(--green);--g:rgba(92,194,74,.25)"><b data-count="4">0</b><span>personajes elementales</span></div>
+        <div class="stat rv d3" style="--c:#e0a800;--g:rgba(255,210,63,.3)"><b data-count="1">0</b><span>podio para el ganador</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRAILER -->
+  <section id="trailer">
+    <div class="wrap center">
+      <span class="kicker rv">Tráiler oficial</span>
+      <h2 class="rv">Dale play al <span class="c">rumble</span></h2>
+      <div class="post rv d1">
+        <div class="post-head">
+          <div class="av"><img src="assets/logo.webp" alt=""></div>
+          <div style="text-align:left"><b>@rumblenet</b><small>hace un momento</small></div>
+          <span class="live">ESTRENO</span>
+        </div>
+        <div class="video" id="video">
+          <video id="vid" preload="metadata" poster="assets/trailer_poster.jpg" playsinline>
+            <source src="assets/trailer_720p.mp4" type="video/mp4">
+          </video>
+          <button class="play" id="playBtn" aria-label="Reproducir tráiler"><span><svg><use href="#i-play"/></svg></span></button>
+        </div>
+        <div class="post-foot">
+          <button id="likeBtn" aria-label="Me gusta"><svg><use href="#i-heart"/></svg><span id="likes">2.400</span></button>
+          <button aria-label="Comentarios" onclick="location.hash='evento'"><svg><use href="#i-chat"/></svg>70</button>
+          <span class="cap">Conéctate al juego. Desconecta del exceso.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MINIGAMES -->
+  <section id="minijuegos">
+    <div class="wrap">
+      <span class="kicker rv">Minijuegos</span>
+      <h2 class="rv">Cinco rondas.<br><span class="p">Un solo</span> <span class="c">ganador.</span></h2>
+      <p class="sub rv">Cada partida es una competencia de 5 rondas inspiradas en las redes sociales. Suma puntos, sobrevive y sube al podio.</p>
+      <div class="games">
+        <article class="game rv" style="--tc:var(--cyan-d)">
+          <div class="shot"><img src="assets/01_carrera_del_feed.jpg" alt="Carrera del Feed: vista general del circuito" loading="lazy"><span class="tag">Carrera</span></div>
+          <div class="body"><h3>Carrera del Feed</h3><p>Llega primero a la desconexión: cintas, barras que giran y puentes que caen.</p></div>
+        </article>
+        <article class="game rv d1" style="--tc:var(--pink)">
+          <div class="shot"><img src="assets/04_modo_avion.jpg" alt="Guerra de Tendencias: Modo Avión" loading="lazy"><span class="tag">Tendencias</span></div>
+          <div class="body"><h3>Guerra de Tendencias</h3><p>Atrapa las burbujas en el orden de cada tendencia antes de que se acabe su reloj.</p>
+            <div class="trends"><span>#ModoAvión</span><span>#PantallaBloqueada</span><span>#LluviaDeLikes</span><span>#RetoDelSalto</span><span>#Viral</span></div></div>
+        </article>
+        <article class="game rv" style="--tc:#7a5cff">
+          <div class="shot"><img src="assets/02_socialdrop_plataformas.jpg" alt="SocialDrop: plataformas con íconos" loading="lazy"><span class="tag">Memoria</span></div>
+          <div class="body"><h3>SocialDrop</h3><p>Memoriza y pisa el ícono.</p></div>
+        </article>
+        <article class="game rv d1" style="--tc:var(--coral)">
+          <div class="shot"><img src="assets/03_la_calle.jpg" alt="La Calle: esquivando el tráfico" loading="lazy"><span class="tag">Supervivencia</span></div>
+          <div class="body"><h3>La Calle</h3><p>Aguanta esquivando el tráfico hasta que se acabe el tiempo.</p></div>
+        </article>
+        <article class="game rv d2" style="--tc:#e0a800">
+          <div class="shot"><img src="assets/05_la_selfie_perfecta.jpg" alt="La Selfie Perfecta: arena con la cámara" loading="lazy"><span class="tag">Foto</span></div>
+          <div class="body"><h3>La Selfie Perfecta</h3><p>Entra al marco.</p></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHARACTERS -->
+  <section id="personajes">
+    <div class="wrap">
+      <span class="kicker rv">Personajes</span>
+      <h2 class="rv">Elige tu <span class="c">elemento</span></h2>
+      <div class="select rv" id="select">
+        <div class="stage"><div class="platform"></div><img id="charImg" src="assets/fuego.png" alt="Personaje Fuego"></div>
+        <div class="info">
+          <div class="pnum" id="charNum">P1 · SALA DE ESPERA</div>
+          <h3 id="charName">FUEGO</h3>
+          <p class="who" id="charWho">Elegido por Juan Diego</p>
+          <div class="picker" id="picker" role="group" aria-label="Elegir personaje"></div>
+          <div class="arrows" id="arrowsHint"><kbd>A</kbd><kbd>D</kbd> o <kbd>←</kbd><kbd>→</kbd> para cambiar</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section id="equipo">
+    <div class="wrap center">
+      <span class="kicker rv">Equipo RumbleNet</span>
+      <h2 class="rv">Los que crearon el <span class="p">rumble</span></h2>
+      <div class="team">
+        <div class="member rv" style="--t1:#ffe1d9;--t2:#ffc7bb;--tc:#e2432a"><span class="p">P1</span><img src="assets/fuego.png" alt=""><b>Juan Diego</b><span>Vizcaíno Calle</span></div>
+        <div class="member rv d1" style="--t1:#dfeaff;--t2:#c3d8ff;--tc:#2f6fe6;--rot:1.5deg"><span class="p">P2</span><img src="assets/agua.png" alt=""><b>María del Mar</b><span>Yusti Prins</span></div>
+        <div class="member rv d2" style="--t1:#e2f6db;--t2:#c8ecbd;--tc:#3a9a2a"><span class="p">P3</span><img src="assets/planta.png" alt=""><b>Isac</b><span>Monterrosa Guzmán</span></div>
+        <div class="member rv d3" style="--t1:#fff4cf;--t2:#ffe69a;--tc:#c98f00;--rot:1.5deg"><span class="p">P4</span><img src="assets/rayo.png" alt=""><b>Axel Manuel</b><span>Tornay Romero</span></div>
+      </div>
+      <div class="course rv">
+        <span><b>Estructura de Datos II</b></span>
+        <span>Ingeniería de Sistemas y Computación</span>
+        <span>4.º semestre · Periodo 2026-30 · IST 4031</span>
+        <span>Dirigido por <b>Eduardo Angulo Madrid</b></span>
+        <span>Mesa <b>412</b></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVENT -->
+  <section id="evento">
+    <div class="wrap">
+      <div class="center">
+        <span class="kicker rv">Experiencia exclusiva en vivo</span>
+        <h2 class="rv">¿Quieres jugar <span class="c">Rumble</span><span class="p">Net</span> en exclusiva?</h2>
+        <p class="sub rv">Ven a vivir la experiencia. Te esperamos en la VI Feria Gamer.</p>
+      </div>
+      <div class="event rv">
+        <div class="photo"><img src="assets/coliseo.jpg" alt="Coliseo Cultural y Deportivo Los Fundadores, Universidad del Norte" loading="lazy"><span class="badge">Coliseo Los Fundadores</span></div>
+        <div class="details">
+          <h3>VI Feria<br><em>Gamer</em></h3>
+          <div class="rows">
+            <div class="row"><span class="ic"><svg><use href="#i-cal"/></svg></span><div>26 de noviembre de 2026<small>Jueves</small></div></div>
+            <div class="row"><span class="ic"><svg><use href="#i-clock"/></svg></span><div>8:00 a. m. – 12:00 m.<small>Hora de Colombia</small></div></div>
+            <div class="row"><span class="ic"><svg><use href="#i-pin"/></svg></span><div>Coliseo Los Fundadores<small>Universidad del Norte · Barranquilla</small></div></div>
+            <div class="row"><span class="ic"><svg><use href="#i-pad"/></svg></span><div>Mesa 412<small>Nuestro stand: aquí se juega RumbleNet en exclusiva</small></div></div>
+          </div>
+          <p id="cdLabel" style="font-weight:900;letter-spacing:2px;font-size:13px;color:#c9bff0;position:relative;margin-bottom:-12px">FALTAN</p>
+          <div class="countdown" id="countdown" aria-live="polite">
+            <div><b id="cd-d">00</b><span>días</span></div><div><b id="cd-h">00</b><span>horas</span></div><div><b id="cd-m">00</b><span>min</span></div><div><b id="cd-s">00</b><span>seg</span></div>
+          </div>
+          <div class="ctas">
+            <button class="btn" id="icsBtn"><svg width="20" height="20"><use href="#i-cal"/></svg>AGREGAR AL CALENDARIO</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- POSTER -->
+  <section id="afiche">
+    <div class="wrap poster-wrap">
+      <div class="poster rv"><img src="assets/afiche.webp" alt="Afiche oficial de RumbleNet para la VI Feria Gamer" loading="lazy"></div>
+      <div class="rv d1">
+        <span class="kicker">Afiche oficial</span>
+        <h2>Compártelo.<br><span class="p">Invita</span> a tu <span class="c">squad.</span></h2>
+        <p class="sub" id="shareSub">Mándale esta página a tus amigos y que vengan a la mesa 412. Se juega de a 4: completa tu squad.</p>
+        <div class="ctas" style="display:flex;gap:14px;flex-wrap:wrap;margin-top:26px">
+          <button class="btn cyan" id="shareBtn"><svg width="20" height="20"><use href="#i-users"/></svg>COMPARTIR CON MI SQUAD</button>
+          <a class="btn ghost" href="assets/afiche.webp" download="RumbleNet_Afiche.webp"><svg width="20" height="20"><use href="#i-down"/></svg>AFICHE</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="bye rv">El scroll no se acaba.<br><span>Tu tiempo sí.</span></p>
+    <p class="rv">Cierra el feed. Nos vemos en el rumble.</p>
+    <p class="small">RumbleNet · Proyecto de Estructura de Datos II · Universidad del Norte · 2026</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status"></div>
+<div class="clock" id="clock" title="Tiempo en esta página"><span class="dot"><svg><use href="#i-clock"/></svg></span><span class="txt">Llevas</span><b id="clockT">00:00</b><span class="txt" id="clockMsg">en esta página</span></div>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* background icon field */
+  const field = document.getElementById('field');
+  const icons = ['i-heart','i-like','i-chat','i-bell'];
+  const nIcons = innerWidth < 700 ? 9 : 22;  // lighter on phones (most visitors arrive by QR)
+  if (!reduce) for (let i = 0; i < nIcons; i++) {
+    const s = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    const size = 18 + Math.random()*34;
+    s.setAttribute('width', size); s.setAttribute('height', size);
+    s.innerHTML = `<use href="#${icons[i % icons.length]}"/>`;
+    s.style.left = (Math.random()*100) + 'vw';
+    s.style.animationDuration = (18 + Math.random()*22) + 's';
+    s.style.animationDelay = (-Math.random()*40) + 's';
+    field.appendChild(s);
+  }
+
+  /* marquee: duplicate track for a seamless loop */
+  const track = document.getElementById('track'); track.innerHTML += track.innerHTML;
+
+  /* nav hides on scroll down */
+  const nav = document.getElementById('nav'); let lastY = 0;
+  addEventListener('scroll', () => { const y = scrollY; nav.classList.toggle('hide', y > lastY && y > 300); lastY = y; }, {passive:true});
+
+  /* logo tilt */
+  const stage = document.getElementById('logoStage');
+  if (!reduce) addEventListener('pointermove', e => {
+    const x = e.clientX / innerWidth - .5, y = e.clientY / innerHeight - .5;
+    stage.style.setProperty('--ry', (x*14) + 'deg'); stage.style.setProperty('--rx', (-y*10) + 'deg');
+  });
+
+  /* reveal + counters */
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in'); io.unobserve(e.target);
+    e.target.querySelectorAll('[data-count]').forEach(countUp);
+    if (e.target.matches('[data-count]')) countUp(e.target);
+  }), {threshold:.18});
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+  function countUp(el){ const n = +el.dataset.count; let i = 0; const t = setInterval(() => { el.textContent = ++i; if (i >= n) clearInterval(t); }, 160); }
+
+  /* card tilt */
+  document.querySelectorAll('.game').forEach(c => {
+    if (reduce) return;
+    c.addEventListener('pointermove', e => { const r = c.getBoundingClientRect(); const x = (e.clientX - r.left)/r.width - .5, y = (e.clientY - r.top)/r.height - .5;
+      c.style.setProperty('--ry', (x*8)+'deg'); c.style.setProperty('--rx', (-y*8)+'deg'); });
+    c.addEventListener('pointerleave', () => { c.style.setProperty('--ry','0deg'); c.style.setProperty('--rx','0deg'); });
+  });
+
+  /* trailer */
+  const vid = document.getElementById('vid'), vbox = document.getElementById('video');
+  document.getElementById('playBtn').addEventListener('click', () => vid.play());
+  vid.addEventListener('play', () => { vbox.classList.add('playing'); vid.controls = true; });
+  vid.addEventListener('pause', () => { if (vid.currentTime < .2) vbox.classList.remove('playing'); });
+  let likes = 2400; const likeBtn = document.getElementById('likeBtn'), likesEl = document.getElementById('likes');
+  likeBtn.addEventListener('click', () => {
+    likeBtn.classList.toggle('on'); likes += likeBtn.classList.contains('on') ? 1 : -1;
+    likesEl.textContent = likes.toLocaleString('es-CO');
+    if (likeBtn.classList.contains('on')) for (let i = 0; i < 6; i++) {
+      const h = document.createElementNS('http://www.w3.org/2000/svg','svg'); h.setAttribute('width',18); h.setAttribute('height',18);
+      h.innerHTML = '<use href="#i-heart"/>'; h.classList.add('burst'); h.style.setProperty('--x', (Math.random()*80-40)+'px'); h.style.animationDelay = (i*60)+'ms';
+      likeBtn.appendChild(h); setTimeout(() => h.remove(), 1400);
+    }
+  });
+
+  /* character select */
+  const chars = [
+    {k:'fuego', n:'FUEGO', p:'P1', who:'Juan Diego', c:'#ff5a3c', glow:'rgba(255,110,70,.55)'},
+    {k:'agua', n:'AGUA', p:'P2', who:'María del Mar', c:'#2f7bff', glow:'rgba(63,160,255,.55)'},
+    {k:'planta', n:'PLANTA', p:'P3', who:'Isac', c:'#47a83a', glow:'rgba(110,210,80,.55)'},
+    {k:'rayo', n:'RAYO', p:'P4', who:'Axel Manuel', c:'#e0a800', glow:'rgba(255,210,63,.65)'}
+  ];
+  const picker = document.getElementById('picker'), sel = document.getElementById('select');
+  const img = document.getElementById('charImg'); let cur = 0;
+  chars.forEach((c, i) => { const b = document.createElement('button'); b.innerHTML = `<img src="assets/${c.k}.png" alt="">`; b.setAttribute('aria-label', c.n); b.onclick = () => pick(i); picker.appendChild(b); });
+  function pick(i){
+    cur = (i + chars.length) % chars.length; const c = chars[cur];
+    img.src = `assets/${c.k}.png`; img.alt = 'Personaje ' + c.n; img.classList.remove('swap'); void img.offsetWidth; img.classList.add('swap');
+    document.getElementById('charName').textContent = c.n;
+    document.getElementById('charNum').textContent = `${c.p} · SALA DE ESPERA`;
+    document.getElementById('charWho').textContent = `Elegido por ${c.who}`;
+    sel.style.setProperty('--cc', c.c); sel.style.setProperty('--ring', c.c); sel.style.setProperty('--glow', c.glow);
+    [...picker.children].forEach((b, j) => b.setAttribute('aria-pressed', j === cur));
+  }
+  pick(0);
+  if (matchMedia('(hover: none)').matches) document.getElementById('arrowsHint').textContent = 'Desliza o toca un personaje para cambiar';
+  addEventListener('keydown', e => {
+    const r = sel.getBoundingClientRect(); if (r.top > innerHeight || r.bottom < 0) return;
+    if (['a','A','ArrowLeft'].includes(e.key)) pick(cur - 1);
+    if (['d','D','ArrowRight'].includes(e.key)) pick(cur + 1);
+  });
+  document.querySelectorAll('.heads img').forEach(h => h.addEventListener('click', () => { pick(+h.dataset.go); document.getElementById('personajes').scrollIntoView({behavior: reduce ? 'auto' : 'smooth'}); }));
+
+  /* event phase: before → live (26 Nov 2026, 8:00–12:00 UTC-5) → after.
+     Preview any phase with ?modo=antes | vivo | despues */
+  const start = new Date('2026-11-26T08:00:00-05:00'), end = new Date('2026-11-26T12:00:00-05:00');
+  const forced = new URLSearchParams(location.search).get('modo');
+  const phaseAt = now => forced === 'vivo' ? 'live' : forced === 'despues' ? 'after' : forced === 'antes' ? 'before'
+                       : now < start ? 'before' : now < end ? 'live' : 'after';
+  const cd = document.getElementById('countdown'), cdLabel = document.getElementById('cdLabel');
+  const pad = n => String(n).padStart(2,'0');
+  const previewEnd = new Date(Date.now() + 2.5*3600e3);  // only used by ?modo=vivo outside event hours
+  let applied = null;
+  function applyPhase(ph){
+    if (ph === applied) return; applied = ph;
+    document.body.classList.toggle('live', ph === 'live');
+    const cta1 = document.getElementById('cta1'), cta2 = document.getElementById('cta2'), navCta = document.getElementById('navCta'), ics = document.getElementById('icsBtn');
+    if (ph === 'live') {
+      document.getElementById('heroLead').textContent = 'Ya estás frente a la mesa 412. Guarda el feed, siéntate y juega RumbleNet en exclusiva.';
+      document.getElementById('step1T').textContent = 'Ya estás en la mesa 412';
+      document.getElementById('step1S').textContent = 'Pide tu turno: entran 4 jugadores por partida.';
+      document.getElementById('shareSub').textContent = '¿Les falta gente? Mándale esta página a tus amigos y que vengan a la mesa 412. Se juega de a 4.';
+      cta1.innerHTML = '<svg width="20" height="20"><use href="#i-pad"/></svg>¡QUIERO JUGAR!'; cta1.href = '#jugar';
+      cta2.textContent = 'VER TRÁILER'; cta2.href = '#trailer';
+      navCta.textContent = 'JUGAR'; navCta.href = '#jugar';
+      ics.style.display = 'none'; cdLabel.textContent = 'LA EXPERIENCIA TERMINA EN';
+    } else if (ph === 'after') {
+      document.getElementById('heroLead').textContent = '¡Gracias por jugar en la VI Feria Gamer! El scroll no se acaba. Tu tiempo sí.';
+      cta1.href = '#trailer'; cta2.textContent = 'CONOCE AL EQUIPO'; cta2.href = '#equipo';
+      navCta.textContent = 'EQUIPO'; navCta.href = '#equipo';
+      ics.style.display = 'none'; cdLabel.style.display = 'none';
+      cd.className = 'countdown done'; cd.textContent = '¡GRACIAS POR JUGAR RUMBLENET!';
+    }
+  }
+  function tick(){
+    const now = new Date(), ph = phaseAt(now); applyPhase(ph);
+    if (ph === 'after') return false;
+    const target = ph === 'live' ? (forced === 'vivo' && (now < start || now >= end) ? previewEnd : end) : start;
+    const s = Math.max(0, Math.floor((target - now)/1000));
+    document.getElementById('cd-d').textContent = pad(Math.floor(s/86400));
+    document.getElementById('cd-h').textContent = pad(Math.floor(s%86400/3600));
+    document.getElementById('cd-m').textContent = pad(Math.floor(s%3600/60));
+    document.getElementById('cd-s').textContent = pad(s%60);
+    return true;
+  }
+  if (tick()) { const t = setInterval(() => { if (!tick()) clearInterval(t); }, 1000); }
+
+  /* share with your squad */
+  const toast = document.getElementById('toast');
+  const say = msg => { toast.textContent = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2200); };
+  document.getElementById('shareBtn').addEventListener('click', async () => {
+    const data = { title: 'RumbleNet · VI Feria Gamer', text: document.body.classList.contains('live') ? 'Estoy en la mesa 412 de la VI Feria Gamer jugando RumbleNet. ¡Ven, se juega de a 4!' : 'Vamos a jugar RumbleNet en la mesa 412 · VI Feria Gamer, 26 de noviembre, Coliseo Los Fundadores. Se juega de a 4.', url: location.href.split('#')[0].split('?')[0] };
+    try {
+      if (navigator.share) { await navigator.share(data); return; }
+      await navigator.clipboard.writeText(data.url); say('¡Enlace copiado! Pásaselo a tu squad');
+    } catch (e) { if (e && e.name !== 'AbortError') say('Copia el enlace de la barra del navegador'); }
+  });
+
+  /* swipe between characters on touch screens */
+  let sx = null;
+  sel.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, {passive:true});
+  sel.addEventListener('touchend', e => { if (sx === null) return; const dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 40) pick(cur + (dx < 0 ? 1 : -1)); sx = null; });
+
+  /* add to calendar (.ics) */
+  document.getElementById('icsBtn').addEventListener('click', () => {
+    const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//RumbleNet//Feria Gamer VI//ES','CALSCALE:GREGORIAN','BEGIN:VEVENT',
+      'UID:rumblenet-feria-gamer-vi-2026','DTSTAMP:20261121T000000Z','DTSTART:20261126T130000Z','DTEND:20261126T170000Z',
+      'SUMMARY:RumbleNet · VI Feria Gamer','LOCATION:Coliseo Los Fundadores\\, Universidad del Norte',
+      'DESCRIPTION:Experiencia exclusiva en vivo de RumbleNet. Leave the feed. Join the rumble.','END:VEVENT','END:VCALENDAR'].join('\r\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([ics], {type:'text/calendar'})); a.download = 'RumbleNet_FeriaGamer.ics'; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  });
+
+  /* time on page — the message of the game, applied to the page itself */
+  const t0 = Date.now(), clockT = document.getElementById('clockT'), clockMsg = document.getElementById('clockMsg'), clock = document.getElementById('clock');
+  setInterval(() => {
+    const s = Math.floor((Date.now() - t0)/1000); clockT.textContent = pad(Math.floor(s/60)) + ':' + pad(s%60);
+    if (s === 60) { clockMsg.textContent = document.body.classList.contains('live') ? '· guarda el celular y ven a jugar' : '· buen momento para ir a jugar'; clock.classList.add('nudge'); }
+  }, 1000);
+})();
+</script>
+</body>
+</html>
